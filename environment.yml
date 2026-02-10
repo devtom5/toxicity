@@ -1,0 +1,16 @@
+name: toxicity
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - numpy
+  - pandas
+  - scikit-learn
+  - joblib
+  - pyyaml
+  - rdkit
+  - mordred
+  - pip:
+      - streamlit

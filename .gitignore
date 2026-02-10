@@ -10,9 +10,8 @@ __pycache__/
 # Jupyter
 .ipynb_checkpoints/
 
-# Data & models
+# Data & reports (keep models for Streamlit Cloud)
 /data/
-/models/
 /reports/
 
 # OS
