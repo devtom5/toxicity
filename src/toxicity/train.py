@@ -7,9 +7,11 @@ import numpy as np
 import pandas as pd
 import shap
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import FunctionTransformer
+from sklearn.feature_selection import SelectFromModel
 
 from .data import load_csv, split_features_targets, coerce_numeric
-from .features import PreprocessConfig, build_preprocessor, get_feature_names, FeatureSelector, select_top_k_by_shap
+from .features import PreprocessConfig, build_preprocessor, get_feature_names, select_top_k_by_shap
 from .modeling import build_classifier, build_regressor
 from .utils import load_config, ensure_dir
 
@@ -31,7 +33,8 @@ def train_task(X, y, pre_cfg, model_cfg, fs_method, top_k, shap_sample, shap_plo
             raise ValueError("Model does not support feature_importances_")
         imp = model.feature_importances_
         top_idx = np.argsort(imp)[::-1][:top_k]
-        selector = FeatureSelector(indices=top_idx.tolist())
+
+        selector = SelectFromModel(model, prefit=True, max_features=top_k, threshold=-np.inf)
         X_sel = selector.transform(Xp)
         X_sel = np.asarray(X_sel)
         if X_sel.ndim > 2:
@@ -76,7 +79,7 @@ def train_task(X, y, pre_cfg, model_cfg, fs_method, top_k, shap_sample, shap_plo
 
         top_idx = select_top_k_by_shap(shap_matrix, top_k)
 
-        selector = FeatureSelector(indices=top_idx)
+        selector = SelectFromModel(model, prefit=True, max_features=top_k, threshold=-np.inf)
         X_sel = selector.transform(Xp)
         X_sel = np.asarray(X_sel)
         if X_sel.ndim > 2:
@@ -117,7 +120,7 @@ def train_task(X, y, pre_cfg, model_cfg, fs_method, top_k, shap_sample, shap_plo
 
     pipeline = Pipeline([
         ("preprocessor", preprocessor),
-        ("selector", FeatureSelector(indices=None)),
+        ("identity", FunctionTransformer(lambda x: x)),
         ("model", model),
     ])
 
