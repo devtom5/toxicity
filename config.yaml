@@ -1,0 +1,59 @@
+project:
+  name: toxicity-ld50
+  random_state: 42
+
+paths:
+  data_dir: data
+  raw_csv: data/raw_compound.csv
+  train_csv: data/train.csv
+  test_csv: data/test.csv
+  external_csv: data/external_validation.csv
+  model_dir: models
+  report_dir: reports
+
+columns:
+  id_col: TAID
+  smiles_col: SMILES
+  tox_label_col: Toxicity
+  ld50_col: Toxicity Value
+  drop_cols: []
+
+feature_generation:
+  use_padel: false
+  use_mordred: true
+  mordred_n: 200
+  padel_max_rows: null
+
+preprocess:
+  scale_numeric: true
+  encode_categorical: true
+
+feature_selection:
+  method: importance
+  top_k: 50
+  shap_sample: 100
+  shap_plot: false
+
+models:
+  classifier:
+    type: random_forest
+    params:
+      n_estimators: 50
+      max_depth: null
+      n_jobs: 1
+  regressor:
+    type: random_forest
+    params:
+      n_estimators: 50
+      max_depth: null
+      n_jobs: 1
+
+metrics:
+  classification:
+    - roc_auc
+    - accuracy
+    - f1
+  regression:
+    - rmse
+    - mae
+    - r2

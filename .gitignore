@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data & models
+/data/
+/models/
+/reports/
+
+# OS
+.DS_Store
+
+# Logs
+tmp/
+*.log
